@@ -58,7 +58,7 @@ public class TreatController : MonoBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 Vector3 spawnPosition = hit.point + Vector3.up * spawnOffsetY; // Add offset above the ground
-                GameObject treatInstance = Instantiate(treatPrefab, spawnPosition, Quaternion.identity);
+                GameObject treatInstance = Instantiate(treatPrefab, spawnPosition, Quaternion.Euler(90, 0, 0));
                 Debug.Log($"Treat Spawned - Position: {spawnPosition}");
 
                 // Notify the pet about the spawned treat

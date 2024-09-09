@@ -1,23 +1,25 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UI; // Import this to work with UI buttons
+using UnityEngine.UI;
 
 public class RandomMovement : MonoBehaviour
 {
     public NavMeshAgent agent;
-    public float range; // radius of sphere
-    public Transform centrePoint; // centre of the area the agent wants to move around in
-
-    // Reference to the UI Button
-    public Button moveToCameraButton;
+    public float range; // radius of the sphere for random wandering
+    public Transform centrePoint; // centre of the area for wandering
+    public Button moveToCameraButton; // Button to trigger move to camera
     public Camera mainCamera; // Reference to the camera
 
     private bool isWaiting = false;
+    private bool isMovingToTreat = false; // Flag to track if the pet is moving to a treat
+
+    private PetAI petAI; // Reference to the PetAI script for managing treat movement
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        petAI = GetComponent<PetAI>();
 
         // Add listener to the button to call MoveToCamera() when clicked
         if (moveToCameraButton != null)
@@ -28,6 +30,14 @@ public class RandomMovement : MonoBehaviour
 
     void Update()
     {
+        // If the pet is moving to a treat, do not perform random wandering
+        if (isMovingToTreat || petAI.isMovingToTreat)
+        {
+            // Let the PetAI handle movement when chasing a treat
+            return;
+        }
+
+        // Perform random wandering when not waiting or moving to a treat
         if (!isWaiting && agent.remainingDistance <= agent.stoppingDistance)
         {
             Vector3 point;
@@ -39,18 +49,19 @@ public class RandomMovement : MonoBehaviour
         }
     }
 
+    // Move the pet towards the camera position (triggered by button)
     void MoveToCamera()
     {
-        // If already waiting, return
-        if (isWaiting) return;
+        if (isWaiting || isMovingToTreat) return;
 
         // Set the destination to the camera's position
         agent.SetDestination(mainCamera.transform.position);
 
-        // Start the coroutine to wait and resume wandering
+        // Temporarily stop wandering
         StartCoroutine(WaitAndResumeWandering());
     }
 
+    // Wait before resuming wandering
     IEnumerator WaitAndResumeWandering()
     {
         isWaiting = true;
@@ -58,10 +69,11 @@ public class RandomMovement : MonoBehaviour
         // Wait for 5 seconds
         yield return new WaitForSeconds(5f);
 
-        // Resume wandering
+        // Resume wandering after wait
         isWaiting = false;
     }
 
+    // Generate a random point within the specified range on the NavMesh
     bool RandomPoint(Vector3 center, float range, out Vector3 result)
     {
         Vector3 randomPoint = center + Random.insideUnitSphere * range;
@@ -74,5 +86,18 @@ public class RandomMovement : MonoBehaviour
 
         result = Vector3.zero;
         return false;
+    }
+
+    // Call this method from PetAI or other scripts to stop wandering and move to the treat
+    public void MoveToTreat(Vector3 treatPosition)
+    {
+        isMovingToTreat = true;
+        agent.SetDestination(treatPosition);
+    }
+
+    // Call this when treat is consumed or after reaching the destination
+    public void ResumeWandering()
+    {
+        isMovingToTreat = false;
     }
 }
