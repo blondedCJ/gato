@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class PetAI : MonoBehaviour
 {
@@ -59,12 +60,26 @@ public class PetAI : MonoBehaviour
         float distanceToTreat = Vector3.Distance(transform.position, currentTreatTarget.transform.position);
         if (distanceToTreat <= treatConsumeDistance)
         {
-            ConsumeTreat();
+            // Start the coroutine to wait and then consume the treat
+            StartCoroutine(WaitAndConsumeTreat());
             // After consuming the treat, resume wandering
             randomMovement.ResumeWandering();
         }
     }
 
+    // Coroutine to wait 2 seconds before consuming the treat
+    private IEnumerator WaitAndConsumeTreat()
+    {
+        // Stop the pet from moving during the waiting time
+        isMovingToTreat = false;
+
+        Debug.Log("Pet arrived at the treat. Waiting for 2 seconds to eat...");
+
+        // Wait for 2 seconds to mimic the pet eating
+        yield return new WaitForSeconds(2f);
+
+        ConsumeTreat(); // Consume the treat after waiting
+    }
 
     private void ConsumeTreat()
     {
@@ -86,7 +101,6 @@ public class PetAI : MonoBehaviour
         Destroy(currentTreatTarget);
 
         // Stop moving
-        isMovingToTreat = false;
         currentTreatTarget = null;
     }
 }

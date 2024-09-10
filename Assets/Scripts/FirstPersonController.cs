@@ -15,7 +15,7 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float walkSpeed = 3f;
     [SerializeField] private float runSpeed = 6f;
     [SerializeField] private float moveInputDeadZone = 0.1f;
-    [SerializeField] private float smoothTime = 0.1f;
+    [SerializeField] private float smoothTime = 1f;
     [SerializeField] private float lookSmoothFactor = 0.1f;
     [SerializeField] private float dragDistanceThreshold = 100f;
 
@@ -27,19 +27,16 @@ public class FirstPersonController : MonoBehaviour
 
     // Touch detection
     private int leftFingerId = -1, rightFingerId = -1;
-    private float halfScreenWidth;
 
     // Camera control
     private Vector2 lookInput;
     private Vector2 smoothLookInput;
-    private Vector2 lookInputVelocity;
     private float cameraPitch;
 
     // Player movement
     private Vector2 moveTouchStartPosition;
     private Vector2 moveInput;
     private float currentSpeed;
-    private bool isDragging = false;
 
     // Bobbing
     private float defaultCameraYPos;
@@ -54,7 +51,6 @@ public class FirstPersonController : MonoBehaviour
     {
         leftFingerId = -1;
         rightFingerId = -1;
-        halfScreenWidth = Screen.width / 2;
         moveInputDeadZone = Mathf.Pow(Screen.height / moveInputDeadZone, 2);
         defaultCameraYPos = cameraTransform.localPosition.y;
     }
@@ -69,7 +65,7 @@ public class FirstPersonController : MonoBehaviour
             LookAround();
         }
 
-        if (leftFingerId != -1 && isDragging)
+        if (leftFingerId != -1)
         {
             UpdatePlayerSpeed();
             Move();
@@ -86,19 +82,18 @@ public class FirstPersonController : MonoBehaviour
         foreach (UnityEngine.InputSystem.EnhancedTouch.Touch touch in UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches)
         {
             Vector2 touchPosition = touch.screenPosition;
-            bool isWithinMovementPanel = IsTouchWithinPanel(movementPanel);
-            bool isWithinCameraPanel = IsTouchWithinPanel(cameraPanel);
+            bool isWithinMovementPanel = IsTouchWithinPanel(movementPanel, touchPosition);
+            bool isWithinCameraPanel = IsTouchWithinPanel(cameraPanel, touchPosition);
 
             switch (touch.phase)
             {
                 case UnityEngine.InputSystem.TouchPhase.Began:
-                    if (touchPosition.x < Screen.width / 2 && isWithinMovementPanel && leftFingerId == -1)
+                    if (isWithinMovementPanel && leftFingerId == -1)
                     {
                         leftFingerId = touch.finger.index;
                         moveTouchStartPosition = touchPosition;
-                        isDragging = false; // Reset dragging flag
                     }
-                    else if (touchPosition.x >= Screen.width / 2 && isWithinCameraPanel && rightFingerId == -1)
+                    else if (isWithinCameraPanel && rightFingerId == -1)
                     {
                         rightFingerId = touch.finger.index;
                     }
@@ -109,7 +104,6 @@ public class FirstPersonController : MonoBehaviour
                     if (touch.finger.index == leftFingerId)
                     {
                         leftFingerId = -1;
-                        isDragging = false; // Reset dragging flag
                     }
                     else if (touch.finger.index == rightFingerId)
                     {
@@ -121,23 +115,16 @@ public class FirstPersonController : MonoBehaviour
                     if (touch.finger.index == rightFingerId && isWithinCameraPanel)
                     {
                         lookInput = touch.delta * cameraSensitivity * Time.deltaTime;
-                        // Set dragging to true only when moving
-                        isDragging = true;
                     }
                     else if (touch.finger.index == leftFingerId && isWithinMovementPanel)
                     {
                         moveInput = touchPosition - moveTouchStartPosition;
 
-                        // Set dragging to true only when moving significantly
+                        // Only move when the drag is significant
                         if (moveInput.sqrMagnitude > moveInputDeadZone)
                         {
-                            isDragging = true;
+                            moveInput.Normalize();
                         }
-                    }
-                    else if (touch.finger.index == leftFingerId)
-                    {
-                        // Reset dragging if the touch moves outside the panel
-                        isDragging = false;
                     }
                     break;
 
@@ -151,37 +138,26 @@ public class FirstPersonController : MonoBehaviour
         }
     }
 
-
-    bool IsTouchWithinPanel(RectTransform panel)
+    bool IsTouchWithinPanel(RectTransform panel, Vector2 touchPosition)
     {
-        Vector2 touchPosition = Touchscreen.current.primaryTouch.position.ReadValue();
         return RectTransformUtility.RectangleContainsScreenPoint(panel, touchPosition, Camera.main);
     }
 
-
     void LookAround()
     {
-        if (rightFingerId != -1 && isDragging)
+        if (rightFingerId != -1)
         {
             // Smoothly interpolate the look input using Lerp
             smoothLookInput = Vector2.Lerp(smoothLookInput, lookInput, smoothTime);
 
             // Vertical (pitch) rotation
             cameraPitch = Mathf.Clamp(cameraPitch - smoothLookInput.y, -90f, 90f);
-            Quaternion targetRotation = Quaternion.Euler(cameraPitch, 0, 0);
-            cameraTransform.localRotation = targetRotation;
+            cameraTransform.localRotation = Quaternion.Euler(cameraPitch, 0, 0);
 
             // Horizontal (yaw) rotation
-            transform.Rotate(transform.up, smoothLookInput.x);
-        }
-        else
-        {
-            // Smoothly reset look input to zero
-            smoothLookInput = Vector2.Lerp(smoothLookInput, Vector2.zero, smoothTime * 2f);
+            transform.Rotate(Vector3.up, smoothLookInput.x);
         }
     }
-
-
 
     void UpdatePlayerSpeed()
     {
@@ -201,10 +177,10 @@ public class FirstPersonController : MonoBehaviour
     {
         if (moveInput.sqrMagnitude <= moveInputDeadZone) return;
 
-        Debug.Log($"Movement Input: {moveInput}");
+        Vector2 movementDirection = moveInput * currentSpeed * Time.deltaTime;
+        Vector3 movement = transform.right * movementDirection.x + transform.forward * movementDirection.y;
 
-        Vector2 movementDirection = moveInput.normalized * currentSpeed * Time.deltaTime;
-        characterController.Move(transform.right * movementDirection.x + transform.forward * movementDirection.y);
+        characterController.Move(movement);
     }
 
     void CameraBobbing()
