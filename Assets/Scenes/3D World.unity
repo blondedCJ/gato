@@ -2504,7 +2504,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1302513668}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 96622b4b3f147274f8fe64df7206e86f, type: 3}
   m_Name: 
@@ -4157,6 +4157,10 @@ PrefabInstance:
       propertyPath: movementPanel
       value: 
       objectReference: {fileID: 459427281}
+    - target: {fileID: 2524329184087710066, guid: bf5d177dfc0523d4e8b71e2fe82c90b1, type: 3}
+      propertyPath: treatController
+      value: 
+      objectReference: {fileID: 1441114796}
     - target: {fileID: 2524329184087710066, guid: bf5d177dfc0523d4e8b71e2fe82c90b1, type: 3}
       propertyPath: lookSmoothFactor
       value: 0.1

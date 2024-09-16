@@ -12,10 +12,15 @@ public class TreatController : MonoBehaviour
     private float lastMouseClickTime = 0f;
     private float lastTouchTapTime = 0f;
 
+    public bool isSpawningTreat { get; private set; } // Flag to indicate spawning treat
+
     public PetAI petController; // Reference to the PetController
 
     void Update()
     {
+        // Reset the flag every frame
+        isSpawningTreat = false;
+
         // Handle mouse double-click
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
@@ -24,6 +29,7 @@ public class TreatController : MonoBehaviour
                 if (isTreatButtonEnabled)
                 {
                     SpawnTreat(GetMouseOrTouchPosition(Mouse.current.position.ReadValue()));
+                    isSpawningTreat = true; // Treat is being spawned
                 }
             }
             lastMouseClickTime = Time.time;
@@ -37,6 +43,7 @@ public class TreatController : MonoBehaviour
                 if (isTreatButtonEnabled)
                 {
                     SpawnTreat(GetMouseOrTouchPosition(Touchscreen.current.primaryTouch.position.ReadValue()));
+                    isSpawningTreat = true; // Treat is being spawned
                 }
             }
             lastTouchTapTime = Time.time;

@@ -9,6 +9,7 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private CharacterController characterController;
     [SerializeField] private RectTransform movementPanel;
     [SerializeField] private RectTransform cameraPanel;
+    [SerializeField] private TreatController treatController; // Reference to TreatController
 
     // Player settings
     [SerializeField] private float cameraSensitivity = 1f;
@@ -57,6 +58,9 @@ public class FirstPersonController : MonoBehaviour
 
     void Update()
     {
+        // Skip input handling if a treat is being spawned this frame
+        if (treatController.isSpawningTreat) return;
+
         GetTouchInput();
         lookInput = Vector2.Lerp(lookInput, Vector2.zero, lookSmoothFactor);
 
@@ -68,7 +72,7 @@ public class FirstPersonController : MonoBehaviour
         if (leftFingerId != -1)
         {
             UpdatePlayerSpeed();
-            Move();
+            Move();  // Move the player only if no treat is being spawned
             CameraBobbing();
         }
         else
@@ -175,25 +179,36 @@ public class FirstPersonController : MonoBehaviour
 
     void Move()
     {
-        if (moveInput.sqrMagnitude <= moveInputDeadZone) return;
+        // Skip movement if a treat is being spawned
+        if (treatController.isSpawningTreat) return;
 
-        Vector2 movementDirection = moveInput * currentSpeed * Time.deltaTime;
-        Vector3 movement = transform.right * movementDirection.x + transform.forward * movementDirection.y;
+        Vector3 forward = transform.forward * moveInput.y;
+        Vector3 right = transform.right * moveInput.x;
+
+        Vector3 movement = (forward + right) * currentSpeed * Time.deltaTime;
 
         characterController.Move(movement);
     }
 
+
     void CameraBobbing()
     {
-        bobbingTimer += Time.deltaTime * walkBobbingSpeed;
-        float newY = defaultCameraYPos + Mathf.Sin(bobbingTimer) * walkBobbingAmount;
-        cameraTransform.localPosition = new Vector3(cameraTransform.localPosition.x, newY, cameraTransform.localPosition.z);
+        if (characterController.velocity.magnitude > 0)
+        {
+            bobbingTimer += Time.deltaTime * walkBobbingSpeed;
+            cameraTransform.localPosition = new Vector3(
+                cameraTransform.localPosition.x,
+                defaultCameraYPos + Mathf.Sin(bobbingTimer) * walkBobbingAmount,
+                cameraTransform.localPosition.z);
+        }
     }
 
     void ApplyBreathingEffect()
     {
         bobbingTimer += Time.deltaTime * idleBobbingSpeed;
-        float newY = defaultCameraYPos + Mathf.Sin(bobbingTimer) * idleBobbingAmount;
-        cameraTransform.localPosition = new Vector3(cameraTransform.localPosition.x, newY, cameraTransform.localPosition.z);
+        cameraTransform.localPosition = new Vector3(
+            cameraTransform.localPosition.x,
+            defaultCameraYPos + Mathf.Sin(bobbingTimer) * idleBobbingAmount,
+            cameraTransform.localPosition.z);
     }
 }
