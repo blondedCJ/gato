@@ -55,24 +55,25 @@ public class TreatController : MonoBehaviour
         isTreatButtonEnabled = !isTreatButtonEnabled; // Toggle treat spawning
     }
 
-    private void SpawnTreat(Vector2 inputPosition)
+private void SpawnTreat(Vector2 inputPosition)
+{
+    if (inputPosition != Vector2.zero)
     {
-        if (inputPosition != Vector2.zero)
+        Ray ray = mainCamera.ScreenPointToRay(inputPosition);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit))
         {
-            Ray ray = mainCamera.ScreenPointToRay(inputPosition);
-            RaycastHit hit;
+            // Spawn at the hit point with a Y offset of 1.5
+            Vector3 spawnPosition = new Vector3(hit.point.x, hit.point.y + 1.5f, hit.point.z); // Add offset to Y
+            GameObject treatInstance = Instantiate(treatPrefab, spawnPosition, Quaternion.identity); // No rotation
+            Debug.Log($"Treat Spawned - Position: {spawnPosition}");
 
-            if (Physics.Raycast(ray, out hit))
-            {
-                Vector3 spawnPosition = hit.point + Vector3.up * spawnOffsetY; // Add offset above the ground
-                GameObject treatInstance = Instantiate(treatPrefab, spawnPosition, Quaternion.Euler(90, 0, 0));
-                Debug.Log($"Treat Spawned - Position: {spawnPosition}");
-
-                // Notify the pet about the spawned treat
-                petController.SetTreatTarget(treatInstance);
-            }
+            // Notify the pet about the spawned treat
+            petController.SetTreatTarget(treatInstance);
         }
     }
+}
 
     private Vector2 GetMouseOrTouchPosition(Vector2 inputPosition)
     {
