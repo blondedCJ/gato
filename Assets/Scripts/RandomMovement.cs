@@ -30,10 +30,10 @@ public class RandomMovement : MonoBehaviour
 
     void Update()
     {
-        // If the pet is moving to a treat, do not perform random wandering
-        if (isMovingToTreat || petAI.isMovingToTreat)
+        // If the pet is moving to a treat or consuming feed, do not perform random wandering
+        if (isMovingToTreat || petAI.isMovingToTreat || petAI.IsConsuming)
         {
-            // Let the PetAI handle movement when chasing a treat
+            // Let the PetAI handle movement when chasing a treat or consuming feed
             return;
         }
 
@@ -48,6 +48,7 @@ public class RandomMovement : MonoBehaviour
             }
         }
     }
+
 
     // Move the pet towards the camera position (triggered by button)
     void MoveToCamera()
@@ -98,6 +99,9 @@ public class RandomMovement : MonoBehaviour
     // Call this when treat is consumed or after reaching the destination
     public void ResumeWandering()
     {
-        isMovingToTreat = false;
+    
+        isWaiting = false;
+        isMovingToTreat = false; // Resetting for treat movement
+        petAI.isMovingToFeed = false; // Resetting for feed movement
     }
 }
