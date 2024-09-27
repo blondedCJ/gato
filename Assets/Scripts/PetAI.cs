@@ -3,10 +3,10 @@ using System.Collections;
 
 public class PetAI : MonoBehaviour
 {
-    public float movementSpeed = 2f; // Speed at which the pet moves
+    public float movementSpeed; // Speed at which the pet moves
     private GameObject currentTreatTarget; // The treat the pet is moving toward
     private GameObject currentFeedTarget;  // The feed the pet is moving toward
-
+    public Animator animator;
     public bool isMovingToTreat = false; // Check if the pet is moving towards a treat
     public bool isMovingToFeed = false;  // Check if the pet is moving towards feed
     public bool IsConsuming { get; private set; } = false;  // Public property to track consumption
@@ -62,6 +62,8 @@ public class PetAI : MonoBehaviour
             Debug.LogWarning("No treat target!");
             return;
         }
+        animator.SetBool("isWalking", false);
+        animator.SetBool("isRunning", true);
 
         RandomMovement randomMovement = GetComponent<RandomMovement>();
         randomMovement.MoveToTreat(currentTreatTarget.transform.position);
@@ -92,26 +94,57 @@ public class PetAI : MonoBehaviour
             return;
         }
 
+        animator.SetBool("isWalking", false);
+        animator.SetBool("isRunning", true);
+
+        // Define the radius around the feed object
+        float radius = 3.8f; // Adjust the radius as needed
+
+        // Generate a random point within the specified radius
+        Vector3 randomOffset = Random.insideUnitSphere * radius;
+
+        // Ensure the random point is on the same plane as the feed object (optional)
+        randomOffset.y = 0; // Set Y to 0 if you want to keep it on the same plane
+
+        // Calculate the target position with the random offset
+        Vector3 targetPosition = currentFeedTarget.transform.position + randomOffset;
+
         RandomMovement randomMovement = GetComponent<RandomMovement>();
-        randomMovement.MoveToTreat(currentFeedTarget.transform.position);
+        randomMovement.MoveToTreat(targetPosition); // Use the modified target position
 
-        Vector3 direction = (currentFeedTarget.transform.position - transform.position).normalized;
+        // Calculate the direction to the feed object
+        Vector3 directionToFeed = (currentFeedTarget.transform.position - transform.position).normalized;
         float step = movementSpeed * Time.deltaTime;
-        transform.position = Vector3.MoveTowards(transform.position, currentFeedTarget.transform.position, step);
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, step);
 
-        if (direction != Vector3.zero)
+        float distanceToFeed = Vector3.Distance(transform.position, targetPosition);
+
+        // Rotate towards the feed only if not too close, and apply more control on rotation
+        if (distanceToFeed > treatConsumeDistance + 0.5f) // Add a slight buffer to stop rotating when close
         {
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+            if (directionToFeed != Vector3.zero)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(directionToFeed);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+            }
+        }
+        else
+        {
+            // Freeze rotation when close to the feed to avoid jitter
+            transform.rotation = Quaternion.LookRotation(currentFeedTarget.transform.position - transform.position);
         }
 
-        float distanceToFeed = Vector3.Distance(transform.position, currentFeedTarget.transform.position);
+        // Once within the consumption range, start consuming the feed
         if (distanceToFeed <= treatConsumeDistance)
         {
             StartCoroutine(ConsumeFeed());
+            animator.SetBool("isRunning", false);
+            animator.SetBool("isIdling", true);
             // No need to resume wandering here, let the coroutine handle it
         }
     }
+
+
 
 
 
@@ -121,7 +154,8 @@ public class PetAI : MonoBehaviour
 
         Debug.Log("Pet arrived at the treat. Waiting for 2 seconds to eat...");
         yield return new WaitForSeconds(2f);
-
+        animator.SetBool("isRunning", false);
+        animator.SetBool("isIdling", true);
         ConsumeTreat();
     }
 
@@ -133,8 +167,12 @@ public class PetAI : MonoBehaviour
             return;
         }
 
+        
+
         Debug.Log("Pet consumed the treat: " + currentTreatTarget.name);
         petStatus.IncreaseHungerBy(10f);
+        animator.SetBool("isRunning", false);
+
 
         Destroy(currentTreatTarget);
         currentTreatTarget = null;
@@ -155,6 +193,7 @@ public class PetAI : MonoBehaviour
         {
             Debug.Log("Pet consumed the feed: " + currentFeedTarget.name);
             petStatus.IncreaseHungerBy(feedHungerIncrease);
+            animator.SetBool("isRunning", false);
 
             // Assuming the feed prefab has two children: "CatFood" and "Bowl"
             Transform catFood = currentFeedTarget.transform.Find("CatFood");

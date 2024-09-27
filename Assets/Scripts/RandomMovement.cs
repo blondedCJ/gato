@@ -10,7 +10,7 @@ public class RandomMovement : MonoBehaviour
     public Transform centrePoint; // centre of the area for wandering
     public Button moveToCameraButton; // Button to trigger move to camera
     public Camera mainCamera; // Reference to the camera
-
+    public Animator animator;
     private bool isWaiting = false;
     private bool isMovingToTreat = false; // Flag to track if the pet is moving to a treat
 
@@ -45,6 +45,9 @@ public class RandomMovement : MonoBehaviour
             {
                 Debug.DrawRay(point, Vector3.up, Color.blue, 1.0f);
                 agent.SetDestination(point);
+                animator.SetBool("isIdling", false);
+                animator.SetBool("isRunning", false);
+                animator.SetBool("isWalking", true); 
             }
         }
     }
