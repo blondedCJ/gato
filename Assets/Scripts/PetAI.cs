@@ -10,8 +10,8 @@ public class PetAI : MonoBehaviour
     public bool isMovingToTreat = false; // Check if the pet is moving towards a treat
     public bool isMovingToFeed = false;  // Check if the pet is moving towards feed
     public bool IsConsuming { get; private set; } = false;  // Public property to track consumption
-
     private PetStatus petStatus; // Reference to PetStatus for updating hunger
+
 
     [SerializeField] private GameObject treatPrefab; // Serialized field for the treat prefab
     [SerializeField] private GameObject feedPrefab;  // Serialized field for the feed prefab
@@ -22,7 +22,7 @@ public class PetAI : MonoBehaviour
     private float feedConsumeDuration = 5f;  // Time to consume the feed
     private float feedHungerIncrease = 50f;  // Amount to increase hunger by half
 
-
+    
 
     void Start()
     {
@@ -39,6 +39,17 @@ public class PetAI : MonoBehaviour
         {
             MoveTowardsFeed();
         }
+
+        bool isIdle = animator.GetCurrentAnimatorStateInfo(0).IsName("Idle");
+        bool isSit = animator.GetCurrentAnimatorStateInfo(0).IsName("Sit");
+
+    }
+
+    public void ResetAnimations() {
+        animator.SetBool("isWalking", false);
+        animator.SetBool("isIdling", false);
+        animator.SetBool("isRunning", false);
+        animator.SetBool("isSitting", false);
     }
 
     public void SetTreatTarget(GameObject treat)
@@ -62,29 +73,57 @@ public class PetAI : MonoBehaviour
             Debug.LogWarning("No treat target!");
             return;
         }
+
         animator.SetBool("isWalking", false);
         animator.SetBool("isRunning", true);
 
+        // Define the radius around the treat object
+        float radius = 3.8f; // Adjust the radius as needed
+
+        // Generate a random point within the specified radius
+        Vector3 randomOffset = Random.insideUnitSphere * radius;
+
+        // Ensure the random point is on the same plane as the treat object
+        randomOffset.y = 0; // Set Y to 0 to keep it on the same plane
+
+        // Calculate the target position with the random offset
+        Vector3 targetPosition = currentTreatTarget.transform.position + randomOffset;
+
         RandomMovement randomMovement = GetComponent<RandomMovement>();
-        randomMovement.MoveToTreat(currentTreatTarget.transform.position);
+        randomMovement.MoveToTreat(targetPosition); // Use the modified target position
 
-        Vector3 direction = (currentTreatTarget.transform.position - transform.position).normalized;
+        // Calculate the direction to the treat object
+        Vector3 directionToTreat = (currentTreatTarget.transform.position - transform.position).normalized;
         float step = movementSpeed * Time.deltaTime;
-        transform.position = Vector3.MoveTowards(transform.position, currentTreatTarget.transform.position, step);
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, step);
 
-        if (direction != Vector3.zero)
+        float distanceToTreat = Vector3.Distance(transform.position, targetPosition);
+
+        // Rotate towards the treat only if not too close, with more control on rotation
+        if (distanceToTreat > treatConsumeDistance + 0.5f) // Add a slight buffer to stop rotating when close
         {
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+            if (directionToTreat != Vector3.zero)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(directionToTreat);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+            }
+        }
+        else
+        {
+            // Freeze rotation when close to the treat to avoid jitter
+            transform.rotation = Quaternion.LookRotation(currentTreatTarget.transform.position - transform.position);
         }
 
-        float distanceToTreat = Vector3.Distance(transform.position, currentTreatTarget.transform.position);
+        // Once within the consumption range, start consuming the treat
         if (distanceToTreat <= treatConsumeDistance)
         {
             StartCoroutine(WaitAndConsumeTreat());
+
+            // Resume wandering after consuming the treat
             randomMovement.ResumeWandering();
         }
     }
+
 
     private void MoveTowardsFeed()
     {
@@ -145,19 +184,41 @@ public class PetAI : MonoBehaviour
     }
 
 
-
-
-
-    private IEnumerator WaitAndConsumeTreat()
+       private IEnumerator WaitAndConsumeTreat()
     {
-        isMovingToTreat = false;
-
-        Debug.Log("Pet arrived at the treat. Waiting for 2 seconds to eat...");
-        yield return new WaitForSeconds(2f);
-        animator.SetBool("isRunning", false);
+        isMovingToTreat = false;  // Stop moving towards the treat
+        IsConsuming = true;       // Start consumption
+        ResetAnimations();
         animator.SetBool("isIdling", true);
-        ConsumeTreat();
+        Debug.Log("Pet arrived at the treat. Waiting for 2 seconds to eat...");
+        yield return new WaitForSeconds(2f);  // Wait for 2 seconds
+
+        if (currentTreatTarget != null)
+        {
+            Debug.Log("Pet consumed the treat: " + currentTreatTarget.name);
+            petStatus.IncreaseHungerBy(10f);  // Increase hunger
+
+            // Destroy the treat after consuming
+            Destroy(currentTreatTarget);
+            currentTreatTarget = null;
+
+            // Notify the TreatController that the treat has been consumed
+            FindObjectOfType<TreatController>().ItemConsumed();
+        
+            ResetAnimations();  // Reset all animations
+           
+            
+
+            // Resume wandering after consuming the treat
+            RandomMovement randomMovement = GetComponent<RandomMovement>();
+            randomMovement.ResumeWandering();  // Resume wandering behavior
+            animator.SetBool("isWalking", true);  // Exit idling
+
+            IsConsuming = false;  // End consumption
+        }
     }
+
+
 
     private void ConsumeTreat()
     {
@@ -167,13 +228,9 @@ public class PetAI : MonoBehaviour
             return;
         }
 
-        
-
         Debug.Log("Pet consumed the treat: " + currentTreatTarget.name);
         petStatus.IncreaseHungerBy(10f);
-        animator.SetBool("isRunning", false);
-
-
+ 
         Destroy(currentTreatTarget);
         currentTreatTarget = null;
 
@@ -205,8 +262,10 @@ public class PetAI : MonoBehaviour
                 Debug.Log("Destroying cat food...");
                 Destroy(catFood.gameObject);
                 IsConsuming = false;
+                ResetAnimations();
                 // Resume wandering after consuming food
                 RandomMovement randomMovement = GetComponent<RandomMovement>();
+                animator.SetBool("isWalking", true);
                 randomMovement.ResumeWandering();
             }
 

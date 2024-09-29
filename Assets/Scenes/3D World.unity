@@ -835,6 +835,9 @@ MonoBehaviour:
   moveToCameraButton: {fileID: 0}
   mainCamera: {fileID: 0}
   animator: {fileID: 0}
+  walkingSpeed: 2
+  runningSpeed: 5
+  isWaiting: 0
 --- !u!195 &335440657
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -869,7 +872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcc4409641f9f3c4692bf61a43d9d349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 2
+  movementSpeed: 0
   animator: {fileID: 0}
   isMovingToTreat: 0
   isMovingToFeed: 0
@@ -3589,6 +3592,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6636461264258874817, guid: 9bd2b845a1b943f458f0c62e4609139d, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3605,6 +3612,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1554239913993939004, guid: 9bd2b845a1b943f458f0c62e4609139d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1674165908}
+    - targetCorrespondingSourceObject: {fileID: 1554239913993939004, guid: 9bd2b845a1b943f458f0c62e4609139d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1674165916}
   m_SourcePrefab: {fileID: 100100000, guid: 9bd2b845a1b943f458f0c62e4609139d, type: 3}
 --- !u!1 &1674165907 stripped
 GameObject:
@@ -3669,6 +3679,9 @@ MonoBehaviour:
   moveToCameraButton: {fileID: 0}
   mainCamera: {fileID: 0}
   animator: {fileID: 1674165913}
+  walkingSpeed: 5
+  runningSpeed: 50
+  isWaiting: 0
 --- !u!195 &1674165911
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -3696,6 +3709,21 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 6636461264258874817, guid: 9bd2b845a1b943f458f0c62e4609139d, type: 3}
   m_PrefabInstance: {fileID: 1674165906}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1674165916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1674165907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f8880c60a215c64ab96ee5b50b31bdc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 1674165913}
+  minStateDuration: 5
+  maxStateDuration: 5
 --- !u!1 &1730946497
 GameObject:
   m_ObjectHideFlags: 0

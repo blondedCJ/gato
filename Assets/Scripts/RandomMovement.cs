@@ -6,15 +6,17 @@ using UnityEngine.UI;
 public class RandomMovement : MonoBehaviour
 {
     public NavMeshAgent agent;
-    public float range; // radius of the sphere for random wandering
-    public Transform centrePoint; // centre of the area for wandering
+    public float range; // radius for random wandering
+    public Transform centrePoint; // center of the area for wandering
     public Button moveToCameraButton; // Button to trigger move to camera
     public Camera mainCamera; // Reference to the camera
     public Animator animator;
-    private bool isWaiting = false;
+    
+    public bool isWaiting = false;
     private bool isMovingToTreat = false; // Flag to track if the pet is moving to a treat
+    private bool isMovingToCamera = false; // Flag to check if moving to camera
 
-    private PetAI petAI; // Reference to the PetAI script for managing treat movement
+    private PetAI petAI; // Reference to the PetAI script
 
     void Start()
     {
@@ -30,51 +32,48 @@ public class RandomMovement : MonoBehaviour
 
     void Update()
     {
-        // If the pet is moving to a treat or consuming feed, do not perform random wandering
-        if (isMovingToTreat || petAI.isMovingToTreat || petAI.IsConsuming)
+        // Prevent random movement when moving to a treat, feed, camera, consuming, or when waiting
+        if (isWaiting || isMovingToTreat || petAI.isMovingToTreat || petAI.isMovingToFeed || petAI.IsConsuming || isMovingToCamera)
         {
-            // Let the PetAI handle movement when chasing a treat or consuming feed
+            agent.ResetPath(); // Stop the NavMeshAgent from moving
             return;
         }
 
-        // Perform random wandering when not waiting or moving to a treat
-        if (!isWaiting && agent.remainingDistance <= agent.stoppingDistance)
+        // If not waiting and the agent has reached its destination, perform random wandering
+        if (agent.remainingDistance <= agent.stoppingDistance)
         {
             Vector3 point;
             if (RandomPoint(centrePoint.position, range, out point))
             {
                 Debug.DrawRay(point, Vector3.up, Color.blue, 1.0f);
                 agent.SetDestination(point);
-                animator.SetBool("isIdling", false);
-                animator.SetBool("isRunning", false);
-                animator.SetBool("isWalking", true); 
             }
         }
     }
 
-
     // Move the pet towards the camera position (triggered by button)
     void MoveToCamera()
     {
-        if (isWaiting || isMovingToTreat) return;
+        if (isWaiting || isMovingToTreat || petAI.isMovingToTreat || petAI.isMovingToFeed)
+            return;
 
-        // Set the destination to the camera's position
+        isMovingToCamera = true; // Set flag to prevent other actions
         agent.SetDestination(mainCamera.transform.position);
 
         // Temporarily stop wandering
-        StartCoroutine(WaitAndResumeWandering());
+        StartCoroutine(WaitAndResumeWandering(5f));
     }
 
-    // Wait before resuming wandering
-    IEnumerator WaitAndResumeWandering()
+    // Wait for a specified duration before resuming wandering
+    IEnumerator WaitAndResumeWandering(float waitTime)
     {
         isWaiting = true;
 
-        // Wait for 5 seconds
-        yield return new WaitForSeconds(5f);
+        // Wait for the specified time
+        yield return new WaitForSeconds(waitTime);
 
-        // Resume wandering after wait
         isWaiting = false;
+        isMovingToCamera = false;
     }
 
     // Generate a random point within the specified range on the NavMesh
@@ -92,19 +91,20 @@ public class RandomMovement : MonoBehaviour
         return false;
     }
 
-    // Call this method from PetAI or other scripts to stop wandering and move to the treat
+    // Move to treat method (can be called from PetAI or other scripts)
     public void MoveToTreat(Vector3 treatPosition)
     {
         isMovingToTreat = true;
         agent.SetDestination(treatPosition);
     }
 
-    // Call this when treat is consumed or after reaching the destination
+    // Call this when the treat is consumed or after reaching the destination
     public void ResumeWandering()
     {
-    
         isWaiting = false;
-        isMovingToTreat = false; // Resetting for treat movement
-        petAI.isMovingToFeed = false; // Resetting for feed movement
+        isMovingToTreat = false;
+
+        // Resume wandering or idle after treat is consumed
+        //animator.SetBool("isWalking", true); // Default back to walking
     }
 }
