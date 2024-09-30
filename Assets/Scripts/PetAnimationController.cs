@@ -1,11 +1,12 @@
 using UnityEngine;
 using System.Collections;
+using UnityEditor;
 
 public class PetAnimationController : MonoBehaviour
 {
     public Animator animator;
-    public float minStateDuration = 1f; // Minimum duration for each animation state
-    public float maxStateDuration = 1f; // Maximum duration for each animation state
+    public float minStateDuration = 5f; // Minimum duration for each animation state
+    public float maxStateDuration = 30f; // Maximum duration for each animation state
 
     private RandomMovement randomMovement;
     private PetAI petAI;
@@ -30,6 +31,15 @@ public class PetAnimationController : MonoBehaviour
         }
     }
 
+    public void StartAnimationCycle()
+    {
+        if (animationCycleCoroutine != null)
+        {
+            StopCoroutine(animationCycleCoroutine);
+        }
+        animationCycleCoroutine = StartCoroutine(CycleAnimations());
+    }
+
     // Cycle through random animations: sit, idle, walk, and run
     private IEnumerator CycleAnimations()
     {
@@ -38,7 +48,7 @@ public class PetAnimationController : MonoBehaviour
             if (!petAI.isMovingToTreat && !petAI.isMovingToFeed && !petAI.IsConsuming)
             {
                 // Randomly choose an animation to play
-                int animationState = Random.Range(0, 2); // 0: sit, 1: idle, 2: walk, 3: run
+                int animationState = Random.Range(0, 3); // 0: sit, 1: idle, 2: walk, 3: run
                 PlayAnimation(animationState);
 
                 // Wait for a random duration before changing to another animation
@@ -79,7 +89,5 @@ public class PetAnimationController : MonoBehaviour
             StopCoroutine(animationCycleCoroutine);
             animationCycleCoroutine = StartCoroutine(CycleAnimations()); // Restart after the action is done
         }
-
-        petAI.ResetAnimations(); // Reset all animation states
     }
 }

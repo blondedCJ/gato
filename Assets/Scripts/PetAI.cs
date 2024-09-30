@@ -74,7 +74,7 @@ public class PetAI : MonoBehaviour
             return;
         }
 
-        animator.SetBool("isWalking", false);
+        ResetAnimations();
         animator.SetBool("isRunning", true);
 
         // Define the radius around the treat object
@@ -133,7 +133,7 @@ public class PetAI : MonoBehaviour
             return;
         }
 
-        animator.SetBool("isWalking", false);
+        ResetAnimations();
         animator.SetBool("isRunning", true);
 
         // Define the radius around the feed object

@@ -11,7 +11,7 @@ public class RandomMovement : MonoBehaviour
     public Button moveToCameraButton; // Button to trigger move to camera
     public Camera mainCamera; // Reference to the camera
     public Animator animator;
-    
+    PetAI petai;
     public bool isWaiting = false;
     private bool isMovingToTreat = false; // Flag to track if the pet is moving to a treat
     private bool isMovingToCamera = false; // Flag to check if moving to camera
@@ -81,7 +81,7 @@ public class RandomMovement : MonoBehaviour
     {
         Vector3 randomPoint = center + Random.insideUnitSphere * range;
         NavMeshHit hit;
-        if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, NavMesh.AllAreas))   
         {
             result = hit.position;
             return true;
@@ -103,8 +103,11 @@ public class RandomMovement : MonoBehaviour
     {
         isWaiting = false;
         isMovingToTreat = false;
-
-        // Resume wandering or idle after treat is consumed
-        //animator.SetBool("isWalking", true); // Default back to walking
+        // Immediately trigger the animation cycle after consumption
+        PetAnimationController petAnimationController = GetComponent<PetAnimationController>();
+        if (petAnimationController != null)
+        {
+            petAnimationController.StartAnimationCycle(); // Start cycling animations directly
+        }
     }
 }
