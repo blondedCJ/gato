@@ -63,7 +63,7 @@ public class PetAnimationController : MonoBehaviour
     // Play a specific animation based on the random selection
     private void PlayAnimation(int state)
     {
-        petAI.ResetAnimations();
+       // petAI.ResetAnimations();
         switch (state)
         {
             case 0: // Sit

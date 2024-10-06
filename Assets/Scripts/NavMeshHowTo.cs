@@ -81,7 +81,7 @@ public class NavMeshHowTo : MonoBehaviour
                 }
                 else
                 {
-                    _agentInstance.SetDestination(hit.point);
+                  // _agentInstance.SetDestination(hit.point);
                 }
             }
         }

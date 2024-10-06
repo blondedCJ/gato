@@ -1,2 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+*.fbx filter=lfs diff=lfs merge=lfs -text
+93fe8d6fa72b4d7282db2119360d1661.fbx filter=lfs diff=lfs merge=lfs -text

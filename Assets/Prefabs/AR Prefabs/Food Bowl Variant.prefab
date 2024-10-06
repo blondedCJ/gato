@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -4450486834344129974, guid: 238f921d17de4c44380c534834ec70ed, type: 3}
+      propertyPath: m_Size.y
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: -4450486834344129974, guid: 238f921d17de4c44380c534834ec70ed, type: 3}
+      propertyPath: m_Center.y
+      value: 0.19
+      objectReference: {fileID: 0}
     - target: {fileID: 7078378178581215648, guid: 238f921d17de4c44380c534834ec70ed, type: 3}
       propertyPath: m_Name
       value: Food Bowl Variant
@@ -26,15 +34,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8901323932177784119, guid: 238f921d17de4c44380c534834ec70ed, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 17.095226
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8901323932177784119, guid: 238f921d17de4c44380c534834ec70ed, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.78
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8901323932177784119, guid: 238f921d17de4c44380c534834ec70ed, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 46.971687
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8901323932177784119, guid: 238f921d17de4c44380c534834ec70ed, type: 3}
       propertyPath: m_LocalRotation.w

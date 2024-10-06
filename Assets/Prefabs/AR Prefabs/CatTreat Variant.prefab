@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -7552279102060542391, guid: f2b8a0d154a27674a8e84682a1fbdcec, type: 3}
+      propertyPath: m_Size.y
+      value: 348.64
+      objectReference: {fileID: 0}
+    - target: {fileID: -7552279102060542391, guid: f2b8a0d154a27674a8e84682a1fbdcec, type: 3}
+      propertyPath: m_Center.y
+      value: -127.9
+      objectReference: {fileID: 0}
     - target: {fileID: 126313937918906990, guid: f2b8a0d154a27674a8e84682a1fbdcec, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.00010999999
@@ -26,7 +34,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 126313937918906990, guid: f2b8a0d154a27674a8e84682a1fbdcec, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.442
+      value: -0.0064
       objectReference: {fileID: 0}
     - target: {fileID: 126313937918906990, guid: f2b8a0d154a27674a8e84682a1fbdcec, type: 3}
       propertyPath: m_LocalPosition.z
@@ -63,6 +71,10 @@ PrefabInstance:
     - target: {fileID: 2342231839358171401, guid: f2b8a0d154a27674a8e84682a1fbdcec, type: 3}
       propertyPath: m_Name
       value: CatTreat Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342231839358171401, guid: f2b8a0d154a27674a8e84682a1fbdcec, type: 3}
+      propertyPath: m_TagString
+      value: Treat
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -72,6 +72,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 72a07b5a29380eb459416f1773085bb7, type: 2}
+    - target: {fileID: -4174027261889389408, guid: 8419a7354efa3734bb40855866be926e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 540529225817830652, guid: 8419a7354efa3734bb40855866be926e, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -79,6 +83,18 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 8419a7354efa3734bb40855866be926e, type: 3}
       propertyPath: m_Name
       value: Persian Cat
+      objectReference: {fileID: 0}
+    - target: {fileID: 4928492724515802338, guid: 8419a7354efa3734bb40855866be926e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5702967101661609997, guid: 8419a7354efa3734bb40855866be926e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6898611551461942684, guid: 8419a7354efa3734bb40855866be926e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8359395605795457350, guid: 8419a7354efa3734bb40855866be926e, type: 3}
       propertyPath: m_Materials.Array.data[0]

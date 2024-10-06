@@ -218,7 +218,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _camera: {fileID: 663311116}
-  _tileSize: 0.15
+  _tileSize: 0.1
   _flatFloorTolerance: 0.2
   _maxSlope: 25
   _stepHeight: 0.1
@@ -328,7 +328,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PetStatus, Assembly-CSharp
-        m_MethodName: ClearAllPlayerPrefs
+        m_MethodName: ResetStatus
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -922,6 +922,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 656164921}
+  - component: {fileID: 656164923}
+  - component: {fileID: 656164922}
   m_Layer: 0
   m_Name: TreatManager
   m_TagString: Untagged
@@ -944,6 +946,39 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &656164922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 656164919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6700f972291d2af47a0456bc9ed762a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _lightshipNavMeshManager: {fileID: 115908401}
+  _objectToPlace: {fileID: 115908399}
+--- !u!114 &656164923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 656164919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2998fa2036159b44b5d0f0defe89128, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  treatPrefab: {fileID: 6221504254127673507, guid: edcba2d64d6ff3d4e827aa442e6cf44b, type: 3}
+  feedPrefab: {fileID: 5509745194690586298, guid: b2257e2c6c9557f4caac340b70e8ede8, type: 3}
+  lightshipNavMeshManager: {fileID: 115908401}
+  mainCamera: {fileID: 663311116}
+  spawnOffsetY: 0.5
+  doubleClickTime: 0.3
+  isItemPlaced: 0
 --- !u!1 &663311110
 GameObject:
   m_ObjectHideFlags: 0
@@ -1950,9 +1985,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1426833655}
-        m_TargetAssemblyTypeName: NavMeshHowTo, Assembly-CSharp
-        m_MethodName: ToggleTreats
+      - m_Target: {fileID: 656164923}
+        m_TargetAssemblyTypeName: TreatControllerAR, Assembly-CSharp
+        m_MethodName: OnTreatButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3027,9 +3062,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1426833655}
-        m_TargetAssemblyTypeName: NavMeshHowTo, Assembly-CSharp
-        m_MethodName: ToggleFeeds
+      - m_Target: {fileID: 656164923}
+        m_TargetAssemblyTypeName: TreatControllerAR, Assembly-CSharp
+        m_MethodName: OnFeedButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4085,6 +4120,7 @@ GameObject:
   - component: {fileID: 1930281635}
   - component: {fileID: 1930281634}
   - component: {fileID: 1930281638}
+  - component: {fileID: 1930281639}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -4198,6 +4234,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 225ca087b3dd98447a460f542f811581, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1930281639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930281633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c37d4f5c9f99264380fa4f3d458fc50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hunger: 100
+  thirst: 100
+  affection: 100
+  hungerDecayRate: 1
+  thirstDecayRate: 1
+  affectionDecayRate: 1
+  hungerBar: {fileID: 1446118319}
+  thirstBar: {fileID: 1673560738}
+  affectionBar: {fileID: 917468705}
+  resetButton: {fileID: 151191529}
 --- !u!1 &1935964040
 GameObject:
   m_ObjectHideFlags: 0

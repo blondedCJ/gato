@@ -4,8 +4,8 @@ using System.Collections;
 public class PetAI : MonoBehaviour
 {
     public float movementSpeed; // Speed at which the pet moves
-    private GameObject currentTreatTarget; // The treat the pet is moving toward
-    private GameObject currentFeedTarget;  // The feed the pet is moving toward
+    public GameObject currentTreatTarget; // The treat the pet is moving toward
+    public GameObject currentFeedTarget;  // The feed the pet is moving toward
     public Animator animator;
     public bool isMovingToTreat = false; // Check if the pet is moving towards a treat
     public bool isMovingToFeed = false;  // Check if the pet is moving towards feed
@@ -45,12 +45,12 @@ public class PetAI : MonoBehaviour
 
     }
 
-    public void ResetAnimations() {
+    /*public void ResetAnimations() {
         animator.SetBool("isWalking", false);
         animator.SetBool("isIdling", false);
         animator.SetBool("isRunning", false);
         animator.SetBool("isSitting", false);
-    }
+    }*/
 
     public void SetTreatTarget(GameObject treat)
     {
@@ -66,7 +66,7 @@ public class PetAI : MonoBehaviour
         isMovingToFeed = true;
     }
 
-    private void MoveTowardsTreat()
+    public void MoveTowardsTreat()
     {
         if (currentTreatTarget == null)
         {
@@ -74,8 +74,8 @@ public class PetAI : MonoBehaviour
             return;
         }
 
-        ResetAnimations();
-        animator.SetBool("isRunning", true);
+       // ResetAnimations();
+        animator.SetBool("isRunningFastF", true);
 
         // Define the radius around the treat object
         float radius = 3.8f; // Adjust the radius as needed
@@ -125,7 +125,7 @@ public class PetAI : MonoBehaviour
     }
 
 
-    private void MoveTowardsFeed()
+    public void MoveTowardsFeed()
     {
         if (currentFeedTarget == null)
         {
@@ -133,7 +133,7 @@ public class PetAI : MonoBehaviour
             return;
         }
 
-        ResetAnimations();
+        //ResetAnimations();
         animator.SetBool("isRunning", true);
 
         // Define the radius around the feed object
@@ -188,7 +188,7 @@ public class PetAI : MonoBehaviour
     {
         isMovingToTreat = false;  // Stop moving towards the treat
         IsConsuming = true;       // Start consumption
-        ResetAnimations();
+        //ResetAnimations();
         animator.SetBool("isIdling", true);
         Debug.Log("Pet arrived at the treat. Waiting for 2 seconds to eat...");
         yield return new WaitForSeconds(2f);  // Wait for 2 seconds
@@ -205,7 +205,7 @@ public class PetAI : MonoBehaviour
             // Notify the TreatController that the treat has been consumed
             FindObjectOfType<TreatController>().ItemConsumed();
         
-            ResetAnimations();  // Reset all animations
+            //ResetAnimations();  // Reset all animations
            
             
 
@@ -262,7 +262,7 @@ public class PetAI : MonoBehaviour
                 Debug.Log("Destroying cat food...");
                 Destroy(catFood.gameObject);
                 IsConsuming = false;
-                ResetAnimations();
+                //ResetAnimations();
                 // Resume wandering after consuming food
                 RandomMovement randomMovement = GetComponent<RandomMovement>();
                 animator.SetBool("isWalking", true);

@@ -12,9 +12,9 @@ public class PetStatus : MonoBehaviour
     public float affectionDecayRate = 0.3f; // Affection decreases by 0.3 units per second
 
     // Serialized fields for UI elements
-    [SerializeField] private Slider hungerBar;
-    [SerializeField] private Slider thirstBar;
-    [SerializeField] private Slider affectionBar;
+    [SerializeField] public Slider hungerBar;
+    [SerializeField] public Slider thirstBar;
+    [SerializeField] public Slider affectionBar;
 
     // Serialized field for the reset button
     [SerializeField] private Button resetButton;
