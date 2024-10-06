@@ -1,93 +1,127 @@
-using UnityEngine;
 using System.Collections;
-using UnityEditor;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class PetAnimationController : MonoBehaviour
 {
     public Animator animator;
-    public float minStateDuration = 5f; // Minimum duration for each animation state
-    public float maxStateDuration = 30f; // Maximum duration for each animation state
+    public bool isIdling = false; // Flag to indicate if the pet is idling
+    public float minIdleTime = 3f; // Minimum time to wait between idle animations
+    public float maxIdleTime = 8f; // Maximum time to wait between idle animations
+    public float transitionTime = 0.5f; // Time for smooth transition between animations
 
+    private Coroutine idleCoroutine;
+
+    // Reference to the RandomMovement script
     private RandomMovement randomMovement;
-    private PetAI petAI;
-    private Coroutine animationCycleCoroutine;
+
+    // List of idle animations
+    private List<string> idleAnimations = new List<string>
+    {
+        "Idle_1",
+        "Idle_2",
+        "Idle_3",
+        "Idle_4",
+        "Idle_5",
+        "Idle_6",
+        "Idle_7",
+        "Idle_8"
+    };
+
+    // List of walking and running animations
+    private List<string> walkAnimations = new List<string>
+    {
+        "Walk_F_IP"
+    };
+
+    private List<string> runAnimations = new List<string>
+    {
+        "RunFast_F_IP"
+    };
 
     void Start()
     {
-        randomMovement = GetComponent<RandomMovement>();
-        petAI = GetComponent<PetAI>();
-
-        // Start cycling through animations
-        animationCycleCoroutine = StartCoroutine(CycleAnimations());
+        animator = GetComponent<Animator>();
+        randomMovement = GetComponent<RandomMovement>(); // Get the reference to RandomMovement
     }
 
     void Update()
     {
-        // Do not cycle animations if the pet is moving to a treat, feed, or consuming
-        if (petAI.isMovingToTreat || petAI.isMovingToFeed || petAI.IsConsuming)
+        if (randomMovement != null)
         {
-            StopCurrentAnimation();
-            return;
-        }
-    }
-
-    public void StartAnimationCycle()
-    {
-        if (animationCycleCoroutine != null)
-        {
-            StopCoroutine(animationCycleCoroutine);
-        }
-        animationCycleCoroutine = StartCoroutine(CycleAnimations());
-    }
-
-    // Cycle through random animations: sit, idle, walk, and run
-    private IEnumerator CycleAnimations()
-    {
-        while (true)
-        {
-            if (!petAI.isMovingToTreat && !petAI.isMovingToFeed && !petAI.IsConsuming)
+            // Check if the cat is wandering or running and play appropriate animations
+            if (randomMovement.isMovingToTreat || randomMovement.isMovingToCamera || !randomMovement.isWaiting)
             {
-                // Randomly choose an animation to play
-                int animationState = Random.Range(0, 3); // 0: sit, 1: idle, 2: walk, 3: run
-                PlayAnimation(animationState);
-
-                // Wait for a random duration before changing to another animation
-                float waitTime = Random.Range(minStateDuration, maxStateDuration);
-                yield return new WaitForSeconds(waitTime);
+                SetIdle(false); // Not idling
+                PlayMovementAnimation(); // Play walking or running animation based on movement
             }
+            else
+            {
+                SetIdle(true); // Start idling if the cat is not moving
+            }
+        }
 
-            yield return null; // Wait until next frame to recheck conditions
+        // Handle idle animation cycling
+        if (isIdling && idleCoroutine == null)
+        {
+            // Start cycling through idle animations if isIdling is true
+            idleCoroutine = StartCoroutine(CycleIdleAnimations());
+        }
+        else if (!isIdling && idleCoroutine != null)
+        {
+            // Stop the idle cycle if isIdling becomes false
+            StopCoroutine(idleCoroutine);
+            idleCoroutine = null;
         }
     }
 
-    // Play a specific animation based on the random selection
-    private void PlayAnimation(int state)
+    void PlayMovementAnimation()
     {
-       // petAI.ResetAnimations();
-        switch (state)
+        // Determine if the cat is walking or running
+        float speed = randomMovement.GetCurrentSpeed(); // Get the current speed from RandomMovement
+        List<string> animationList;
+
+        if (speed >= 0.5f) // Adjust this threshold as needed for running
         {
-            case 0: // Sit
-                animator.SetBool("isSitting", true);
-                randomMovement.isWaiting = true; // Prevent movement while sitting
-                break;
-            case 1: // Idle
-                animator.SetBool("isIdling", true);
-                randomMovement.isWaiting = true; // Prevent movement while idling
-                break;
-            case 2: // Walk
-                animator.SetBool("isWalking", true);
-                randomMovement.isWaiting = false; // Allow movement while walking
-                break;
+            // Play a running animation
+            animationList = runAnimations;
+        }
+        else
+        {
+            // Play a walking animation
+            animationList = walkAnimations;
+        }
+
+        // Randomly choose an animation from the appropriate list
+        string randomMovementAnimation = animationList[Random.Range(0, animationList.Count)];
+
+        // Smoothly transition to the chosen animation using CrossFade
+        animator.Play(randomMovementAnimation);
+    }
+
+    IEnumerator CycleIdleAnimations()
+    {
+        while (isIdling)
+        {
+            // Randomly choose an idle animation from the list
+            string randomIdle = idleAnimations[Random.Range(0, idleAnimations.Count)];
+
+            // Smoothly transition to the chosen idle animation using CrossFade
+            animator.CrossFade(randomIdle, transitionTime);
+
+            // Wait for a random amount of time before cycling to the next idle animation
+            float waitTime = Random.Range(minIdleTime, maxIdleTime);
+            yield return new WaitForSeconds(waitTime);
         }
     }
 
-    // Stop the current animation (used when the pet is moving to treat/feed)
-    private void StopCurrentAnimation()
+    public void SetIdle(bool idle)
     {
-        if (animationCycleCoroutine != null)
+        isIdling = idle;
+        if (!isIdling && idleCoroutine != null)
         {
-            StopCoroutine(animationCycleCoroutine);
-            animationCycleCoroutine = StartCoroutine(CycleAnimations()); // Restart after the action is done
+            StopCoroutine(idleCoroutine); // Stop idle cycling when no longer idling
+            idleCoroutine = null;
         }
     }
 }
