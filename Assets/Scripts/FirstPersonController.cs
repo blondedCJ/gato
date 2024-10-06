@@ -8,8 +8,7 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private CharacterController characterController;
     [SerializeField] private RectTransform movementPanel;
-    [SerializeField] private RectTransform cameraPanel;
-    [SerializeField] private TreatController treatController; // Reference to TreatController
+    [SerializeField] private RectTransform cameraPanel;// Reference to TreatController
 
     // Player settings
     [SerializeField] private float cameraSensitivity = 1f;
@@ -58,8 +57,6 @@ public class FirstPersonController : MonoBehaviour
 
     void Update()
     {
-        // Skip input handling if a treat is being spawned this frame
-        if (treatController.isSpawningTreat) return;
 
         GetTouchInput();
         lookInput = Vector2.Lerp(lookInput, Vector2.zero, lookSmoothFactor);
@@ -179,9 +176,6 @@ public class FirstPersonController : MonoBehaviour
 
     void Move()
     {
-        // Skip movement if a treat is being spawned
-        if (treatController.isSpawningTreat) return;
-
         Vector3 forward = transform.forward * moveInput.y;
         Vector3 right = transform.right * moveInput.x;
 

@@ -3,29 +3,24 @@ using UnityEngine.InputSystem;
 
 public class TreatController : MonoBehaviour
 {
-    [SerializeField] private GameObject treatPrefab; // Reference to the treat prefab
-    [SerializeField] private GameObject feedPrefab; // Reference to the feed prefab
+    [SerializeField] private GameObject treatPrefab;
+    [SerializeField] private GameObject feedPrefab;
 
     public Camera mainCamera;
-    public float spawnOffsetY = 1.0f; // Offset above the ground
-    public float doubleClickTime = 0.3f; // Time window for double-click detection
+    public float spawnOffsetY = 1.0f;
+    public float doubleClickTime = 0.3f;
 
     private bool isTreatButtonEnabled = false;
-    private bool isFeedButtonEnabled = false; // New state for feed button
+    private bool isFeedButtonEnabled = false;
     private float lastMouseClickTime = 0f;
     private float lastTouchTapTime = 0f;
-    private bool isItemPlaced = false; // Track if an item (treat or feed) is already placed
-
-    public bool isSpawningTreat { get; private set; } // Flag to indicate spawning treat
-
-    public PetAI petController; // Reference to the PetAI
+    private bool isItemPlaced = false;
+    public bool isSpawningTreat { get; private set; }
 
     void Update()
     {
-        // Reset the flag every frame
         isSpawningTreat = false;
 
-        // Handle mouse double-click
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
             if (Time.time - lastMouseClickTime <= doubleClickTime)
@@ -33,7 +28,7 @@ public class TreatController : MonoBehaviour
                 if (isTreatButtonEnabled)
                 {
                     SpawnTreat(GetMouseOrTouchPosition(Mouse.current.position.ReadValue()));
-                    isSpawningTreat = true; // Treat is being spawned
+                    isSpawningTreat = true;
                 }
                 else if (isFeedButtonEnabled)
                 {
@@ -43,7 +38,6 @@ public class TreatController : MonoBehaviour
             lastMouseClickTime = Time.time;
         }
 
-        // Handle touch double-tap
         if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
         {
             if (Time.time - lastTouchTapTime <= doubleClickTime)
@@ -51,7 +45,7 @@ public class TreatController : MonoBehaviour
                 if (isTreatButtonEnabled)
                 {
                     SpawnTreat(GetMouseOrTouchPosition(Touchscreen.current.primaryTouch.position.ReadValue()));
-                    isSpawningTreat = true; // Treat is being spawned
+                    isSpawningTreat = true;
                 }
                 else if (isFeedButtonEnabled)
                 {
@@ -62,49 +56,43 @@ public class TreatController : MonoBehaviour
         }
     }
 
-    // Treat Button
     public void OnTreatButtonClick()
     {
-        isTreatButtonEnabled = !isTreatButtonEnabled; // Toggle treat spawning
-        isFeedButtonEnabled = false; // Ensure feed button is disabled
+        isTreatButtonEnabled = !isTreatButtonEnabled;
+        isFeedButtonEnabled = false;
     }
 
-    // New Feed Button
     public void OnFeedButtonClick()
     {
-        isFeedButtonEnabled = !isFeedButtonEnabled; // Toggle feed spawning
-        isTreatButtonEnabled = false; // Ensure treat button is disabled
+        isFeedButtonEnabled = !isFeedButtonEnabled;
+        isTreatButtonEnabled = false;
     }
 
-    // Spawn Treat Logic
     private void SpawnTreat(Vector2 inputPosition)
     {
-        if (inputPosition != Vector2.zero && !isItemPlaced) // Check if no item is currently placed
+        if (inputPosition != Vector2.zero && !isItemPlaced && !IsAnyCatConsuming())
         {
             Ray ray = mainCamera.ScreenPointToRay(inputPosition);
             RaycastHit hit;
-
             if (Physics.Raycast(ray, out hit))
             {
                 Vector3 spawnPosition = new Vector3(hit.point.x, hit.point.y + spawnOffsetY, hit.point.z);
-                GameObject treatInstance = Instantiate(treatPrefab, spawnPosition, Quaternion.identity); // No rotation
+                GameObject treatInstance = Instantiate(treatPrefab, spawnPosition, Quaternion.identity);
                 Debug.Log($"Treat Spawned - Position: {spawnPosition}");
 
-                // Notify the pet about the spawned treat
-                petController.SetTreatTarget(treatInstance);
-                isItemPlaced = true; // Set the flag to true when a treat is placed
+                MoveClosestCatTo(spawnPosition, treatInstance);
+                isItemPlaced = true;
             }
         }
         else
         {
-            Debug.Log("An item is already placed! Please consume it before placing another.");
+            Debug.Log("An item is already placed or a cat is consuming! Please wait before placing another.");
         }
     }
 
-    // Spawn Feed Logic (similar to SpawnTreat)
     private void SpawnFeed(Vector2 inputPosition)
     {
-        if (inputPosition != Vector2.zero && !isItemPlaced) // Check if no item is currently placed
+        if (inputPosition != Vector2.zero && !isItemPlaced && !IsAnyCatConsuming())
         {
             Ray ray = mainCamera.ScreenPointToRay(inputPosition);
             RaycastHit hit;
@@ -112,28 +100,62 @@ public class TreatController : MonoBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 Vector3 spawnPosition = new Vector3(hit.point.x, hit.point.y + spawnOffsetY, hit.point.z);
-                GameObject feedInstance = Instantiate(feedPrefab, spawnPosition, Quaternion.identity); // No rotation
+                GameObject feedInstance = Instantiate(feedPrefab, spawnPosition, Quaternion.identity);
                 Debug.Log($"Feed Spawned - Position: {spawnPosition}");
 
-                // Notify the pet about the spawned feed
-                petController.SetFeedTarget(feedInstance);
-                isItemPlaced = true; // Set the flag to true when feed is placed
+                MoveClosestCatTo(spawnPosition, feedInstance);
+                isItemPlaced = true;
             }
         }
         else
         {
-            Debug.Log("An item is already placed! Please consume it before placing another.");
+            Debug.Log("An item is already placed or a cat is consuming! Please wait before placing another.");
         }
     }
 
-    // Call this method when the treat or feed is consumed
-    public void ItemConsumed()
+    private void MoveClosestCatTo(Vector3 targetPosition, GameObject targetObject)
     {
-        isItemPlaced = false; // Reset the flag to allow new placements
+        CatBehavior[] cats = FindObjectsOfType<CatBehavior>();
+        CatBehavior closestCat = null;
+        float closestDistance = float.MaxValue;
+
+        foreach (CatBehavior cat in cats)
+        {
+            float distance = Vector3.Distance(cat.transform.position, targetPosition);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestCat = cat;
+            }
+        }
+
+        if (closestCat != null)
+        {
+            closestCat.MoveTo(targetPosition, targetObject, this); // Pass the TreatController reference
+            Debug.Log($"Closest cat moving to position: {targetPosition}");
+        }
     }
 
     private Vector2 GetMouseOrTouchPosition(Vector2 inputPosition)
     {
         return inputPosition;
+    }
+
+    private bool IsAnyCatConsuming()
+    {
+        CatBehavior[] cats = FindObjectsOfType<CatBehavior>();
+        foreach (CatBehavior cat in cats)
+        {
+            if (cat.currentState == CatBehavior.CatState.Consuming)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void ResetItemPlacedFlag()
+    {
+        isItemPlaced = false;
     }
 }

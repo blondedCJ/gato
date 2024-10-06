@@ -1737,6 +1737,18 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5725190875750369698, guid: 524e6cfd248a53047b5ca714cba71ec2, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5725190875750369698, guid: 524e6cfd248a53047b5ca714cba71ec2, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5725190875750369698, guid: 524e6cfd248a53047b5ca714cba71ec2, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5725190875750369698, guid: 524e6cfd248a53047b5ca714cba71ec2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.251
       objectReference: {fileID: 0}
@@ -1860,7 +1872,7 @@ NavMeshAgent:
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
-  m_AngularSpeed: 300
+  m_AngularSpeed: 600
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 0
@@ -1927,6 +1939,9 @@ MonoBehaviour:
   agent: {fileID: 608093927}
   animator: {fileID: 608093929}
   wanderRadius: 50
+  defaultStoppingDistance: 0.5
+  consumingStoppingDistance: 0.5
+  petStatus: {fileID: 608093924}
 --- !u!1 &619096897
 GameObject:
   m_ObjectHideFlags: 0
@@ -3330,9 +3345,8 @@ MonoBehaviour:
   treatPrefab: {fileID: 2342231839358171401, guid: f2b8a0d154a27674a8e84682a1fbdcec, type: 3}
   feedPrefab: {fileID: 7078378178581215648, guid: 238f921d17de4c44380c534834ec70ed, type: 3}
   mainCamera: {fileID: 1936608587}
-  spawnOffsetY: 0.5
-  doubleClickTime: 0.2
-  petController: {fileID: 0}
+  spawnOffsetY: 1
+  doubleClickTime: 0.3
 --- !u!1 &1470121433
 GameObject:
   m_ObjectHideFlags: 0
@@ -5072,6 +5086,14 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1683729877329761398, guid: bf5d177dfc0523d4e8b71e2fe82c90b1, type: 3}
+      propertyPath: m_Depth
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1683729877329761398, guid: bf5d177dfc0523d4e8b71e2fe82c90b1, type: 3}
+      propertyPath: field of view
+      value: 60.3
+      objectReference: {fileID: 0}
     - target: {fileID: 2524329184087710066, guid: bf5d177dfc0523d4e8b71e2fe82c90b1, type: 3}
       propertyPath: runSpeed
       value: 50
@@ -5095,7 +5117,7 @@ PrefabInstance:
     - target: {fileID: 2524329184087710066, guid: bf5d177dfc0523d4e8b71e2fe82c90b1, type: 3}
       propertyPath: treatController
       value: 
-      objectReference: {fileID: 1441114796}
+      objectReference: {fileID: 0}
     - target: {fileID: 2524329184087710066, guid: bf5d177dfc0523d4e8b71e2fe82c90b1, type: 3}
       propertyPath: lookSmoothFactor
       value: 0.1

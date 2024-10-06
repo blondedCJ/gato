@@ -203,7 +203,6 @@ public class PetAI : MonoBehaviour
             currentTreatTarget = null;
 
             // Notify the TreatController that the treat has been consumed
-            FindObjectOfType<TreatController>().ItemConsumed();
         
             //ResetAnimations();  // Reset all animations
            
@@ -235,7 +234,6 @@ public class PetAI : MonoBehaviour
         currentTreatTarget = null;
 
         // Notify TreatController that the treat has been consumed
-        FindObjectOfType<TreatController>().ItemConsumed();
     }
 
     private IEnumerator ConsumeFeed()
@@ -278,8 +276,7 @@ public class PetAI : MonoBehaviour
             }
 
             // Clear the feed target and notify TreatController that the feed has been consumed
-            currentFeedTarget = null; // Clear the feed target
-            FindObjectOfType<TreatController>().ItemConsumed(); // Notify TreatController
+            currentFeedTarget = null; // Clear the feed target // Notify TreatController
         }
 
         // Ensure the pet is ready to move to a new feed target if one is set
