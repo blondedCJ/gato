@@ -3340,7 +3340,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _camera: {fileID: 663311116}
   _navmeshManager: {fileID: 115908401}
-  _agentPrefab: {fileID: 2687054141773345179, guid: 7dd724e9fa973c04ba691c74da835abe, type: 3}
+  _agentPrefab: {fileID: 4877194564244264199, guid: 524e6cfd248a53047b5ca714cba71ec2, type: 3}
 --- !u!1 &1446118317
 GameObject:
   m_ObjectHideFlags: 0

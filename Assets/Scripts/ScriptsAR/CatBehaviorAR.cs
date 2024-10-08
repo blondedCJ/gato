@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class CatBehavior : MonoBehaviour
+public class CatBehaviorAR : MonoBehaviour
 {
     public enum CatState { Idle, Walking, MediumRun, FastRun, Sitting, Sleeping, Consuming }
     public CatState currentState = CatState.Idle;
 
     public NavMeshAgent agent;
     public Animator animator;
+    public RandomMovementAR randomMovementAR;
     public float wanderRadius = 10f;
     public float defaultStoppingDistance = 0.5f; // Default stopping distance
     public float consumingStoppingDistance = 1.5f; // Stopping distance when consuming
@@ -43,7 +44,7 @@ public class CatBehavior : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-
+        randomMovementAR = GetComponent<RandomMovementAR>();
         // Initialize animation clips dictionary
         animationClips = new Dictionary<string, AnimationClip>();
         foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
@@ -124,7 +125,13 @@ public class CatBehavior : MonoBehaviour
     {
         stateTimer -= Time.deltaTime;
         directionTimer -= Time.deltaTime;
-
+       
+        if (randomMovementAR.IsWandering)
+        {
+            // Handle animations based on the wandering state
+            HandleWanderingState();
+        }
+        
         if (targetPosition.HasValue && agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending)
         {
             targetPosition = null; // Clear targetPosition to avoid re-triggering the transition
@@ -226,7 +233,7 @@ public class CatBehavior : MonoBehaviour
                 stateTimer = Random.Range(1, 1); // Sitting for a longer period
                 StartSitSequence();
                 break;
-                
+
             case CatState.Sleeping:
                 agent.isStopped = true; // Stop movement
                 stateTimer = Random.Range(1, 1); // Sleeping for a longer period
