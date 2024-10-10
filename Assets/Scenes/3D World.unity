@@ -1945,7 +1945,8 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6040247069497391173, guid: 524e6cfd248a53047b5ca714cba71ec2, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -5263,7 +5264,8 @@ PrefabInstance:
       propertyPath: affectionBar
       value: 
       objectReference: {fileID: 2125574141}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1845570768500789321, guid: e5235f02297f4004e8c03c63dc3116e9, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

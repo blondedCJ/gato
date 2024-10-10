@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Feed
   - Treat
+  - Cat
+  - Floor
   layers:
   - Default
   - TransparentFX

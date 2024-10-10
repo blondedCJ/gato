@@ -101,9 +101,6 @@ PrefabInstance:
       addedObject: {fileID: 2377007783049225209}
     - targetCorrespondingSourceObject: {fileID: 5452259498610572513, guid: 524e6cfd248a53047b5ca714cba71ec2, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6230338774620265064}
-    - targetCorrespondingSourceObject: {fileID: 5452259498610572513, guid: 524e6cfd248a53047b5ca714cba71ec2, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 6138416003734624929}
     - targetCorrespondingSourceObject: {fileID: 5452259498610572513, guid: 524e6cfd248a53047b5ca714cba71ec2, type: 3}
       insertIndex: -1
@@ -111,6 +108,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5452259498610572513, guid: 524e6cfd248a53047b5ca714cba71ec2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2631386976354418528}
+    - targetCorrespondingSourceObject: {fileID: 5452259498610572513, guid: 524e6cfd248a53047b5ca714cba71ec2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4219952169946648835}
   m_SourcePrefab: {fileID: 100100000, guid: 524e6cfd248a53047b5ca714cba71ec2, type: 3}
 --- !u!1 &136758633223902445 stripped
 GameObject:
@@ -138,27 +138,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!65 &6230338774620265064
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 136758633223902445}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.84, y: 2.2, z: 4.55}
-  m_Center: {x: 0.3, y: 1.13, z: 0}
 --- !u!195 &6138416003734624929
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -222,3 +201,24 @@ MonoBehaviour:
   defaultStoppingDistance: 0.5
   consumingStoppingDistance: 0.5
   petStatus: {fileID: 5212931667398183106}
+--- !u!65 &4219952169946648835
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 136758633223902445}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}

@@ -9,7 +9,8 @@ public class TreatControllerAR : MonoBehaviour
     [SerializeField] private GameObject feedPrefab;  // Reference to the feed prefab
     [SerializeField] private LightshipNavMeshManager lightshipNavMeshManager; // Reference to the Lightship NavMesh Manager
 
-    public delegate void ItemPlacedHandler(Vector3 position);
+    public delegate void ItemPlacedHandler(Vector3 position, GameObject itemObject);
+
     public event ItemPlacedHandler OnTreatPlaced;
     public event ItemPlacedHandler OnFeedPlaced;
 
@@ -22,7 +23,7 @@ public class TreatControllerAR : MonoBehaviour
     private float lastMouseClickTime = 0f;           // Track last mouse click time
     private float lastTouchTapTime = 0f;             // Track last touch tap time
     public bool isItemPlaced = false;               // Track if an item is already placed
-               // Reference to the PetAI for notifying treat/feed placement
+                                                    // Reference to the PetAI for notifying treat/feed placement
 
     // Update is called once per frame
     void Update()
@@ -99,14 +100,14 @@ public class TreatControllerAR : MonoBehaviour
 
                     isItemPlaced = true; // Mark item as placed
 
-                    // Trigger the appropriate event
+                    // Trigger the appropriate event with both parameters
                     if (prefab == treatPrefab)
                     {
-                        OnTreatPlaced?.Invoke(spawnPosition);
+                        OnTreatPlaced?.Invoke(spawnPosition, itemInstance); // Pass itemInstance here
                     }
                     else if (prefab == feedPrefab)
                     {
-                        OnFeedPlaced?.Invoke(spawnPosition);
+                        OnFeedPlaced?.Invoke(spawnPosition, itemInstance); // Pass itemInstance here
                     }
                 }
                 else
@@ -122,8 +123,9 @@ public class TreatControllerAR : MonoBehaviour
     }
 
 
-// Utility function to get mouse/touch position
-private Vector2 GetMouseOrTouchPosition(Vector2 inputPosition)
+
+    // Utility function to get mouse/touch position
+    private Vector2 GetMouseOrTouchPosition(Vector2 inputPosition)
     {
         return inputPosition;
     }

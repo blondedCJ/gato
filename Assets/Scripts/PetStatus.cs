@@ -46,6 +46,11 @@ public class PetStatus : MonoBehaviour
         affection = Mathf.Max(0, affection - affectionDecayRate * Time.deltaTime);
     }
 
+    public void IncreaseAffection(float amount)
+    {
+        affection = Mathf.Clamp(affection + amount, 0f, 100f); // Ensure affection is within bounds
+    }
+
     private void UpdateUI()
     {
         hungerBar.value = hunger / 100f;

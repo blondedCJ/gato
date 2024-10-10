@@ -186,7 +186,7 @@ GameObject:
   - component: {fileID: 115908400}
   m_Layer: 0
   m_Name: NavMeshManager
-  m_TagString: Untagged
+  m_TagString: Floor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3340,7 +3340,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _camera: {fileID: 663311116}
   _navmeshManager: {fileID: 115908401}
-  _agentPrefab: {fileID: 4877194564244264199, guid: 524e6cfd248a53047b5ca714cba71ec2, type: 3}
+  _agentPrefab: {fileID: 4195041978791192924, guid: 477d505ca9607fb4ea3e1027c80854de, type: 3}
 --- !u!1 &1446118317
 GameObject:
   m_ObjectHideFlags: 0

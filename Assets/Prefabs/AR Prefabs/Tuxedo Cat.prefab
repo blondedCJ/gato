@@ -1464,6 +1464,7 @@ GameObject:
   - component: {fileID: 8041679096960070812}
   - component: {fileID: 4877194564244264199}
   - component: {fileID: -1518241073437873701}
+  - component: {fileID: 6040247069497391173}
   m_Layer: 0
   m_Name: Tuxedo Cat
   m_TagString: Untagged
@@ -1551,6 +1552,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f102003210e39f4ea2a9dac89fed54d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  treat: {fileID: 6221504254127673507, guid: edcba2d64d6ff3d4e827aa442e6cf44b, type: 3}
+  feed: {fileID: 5509745194690586298, guid: b2257e2c6c9557f4caac340b70e8ede8, type: 3}
+--- !u!114 &6040247069497391173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5452259498610572513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c37d4f5c9f99264380fa4f3d458fc50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hunger: 100
+  thirst: 100
+  affection: 100
+  hungerDecayRate: 0.5
+  thirstDecayRate: 0.7
+  affectionDecayRate: 0.3
+  hungerBar: {fileID: 0}
+  thirstBar: {fileID: 0}
+  affectionBar: {fileID: 0}
+  resetButton: {fileID: 0}
 --- !u!1 &5550406284126944112
 GameObject:
   m_ObjectHideFlags: 0
