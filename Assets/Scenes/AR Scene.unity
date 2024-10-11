@@ -132,7 +132,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8369759}
   - component: {fileID: 8369758}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: XR Origin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -184,7 +184,7 @@ GameObject:
   - component: {fileID: 115908402}
   - component: {fileID: 115908401}
   - component: {fileID: 115908400}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: NavMeshManager
   m_TagString: Floor
   m_Icon: {fileID: 0}
@@ -994,7 +994,7 @@ GameObject:
   - component: {fileID: 663311113}
   - component: {fileID: 663311112}
   - component: {fileID: 663311117}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -3258,9 +3258,9 @@ GameObject:
   - component: {fileID: 1426833654}
   - component: {fileID: 1426833653}
   - component: {fileID: 1426833655}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MeshManager
-  m_TagString: Untagged
+  m_TagString: Floor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3873,7 +3873,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1826889318}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Camera Offset
   m_TagString: Untagged
   m_Icon: {fileID: 0}

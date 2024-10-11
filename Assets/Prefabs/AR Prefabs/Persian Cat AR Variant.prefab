@@ -138,7 +138,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f102003210e39f4ea2a9dac89fed54d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  petStatus: {fileID: 0}
+  treat: {fileID: 0}
+  feed: {fileID: 0}
 --- !u!114 &-1986320115298251927
 MonoBehaviour:
   m_ObjectHideFlags: 0
