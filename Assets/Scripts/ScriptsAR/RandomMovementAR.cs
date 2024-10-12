@@ -403,7 +403,7 @@ public class RandomMovementAR : MonoBehaviour
     }
 
     // Method to play a random idle animation
-    private void PlayRandomIdleAnimation()
+    public void PlayRandomIdleAnimation()
     {
         // Only play a new idle animation if none is currently in progress and the cat is not eating
         if (!idleAnimationInProgress && !isEating && Time.time - lastIdleAnimationTime >= idleAnimationCooldown)

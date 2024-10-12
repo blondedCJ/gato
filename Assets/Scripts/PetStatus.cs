@@ -11,6 +11,8 @@ public class PetStatus : MonoBehaviour
     public float thirstDecayRate = 0.7f;   // Thirst decreases by 0.7 units per second
     public float affectionDecayRate = 0.3f; // Affection decreases by 0.3 units per second
 
+  
+
     // Serialized fields for UI elements
     [SerializeField] public Slider hungerBar;
     [SerializeField] public Slider thirstBar;
@@ -75,7 +77,7 @@ public class PetStatus : MonoBehaviour
     public void PlayWithPet(float amount)
     {
         affection = Mathf.Min(100, affection + amount);
-        UpdateUI();
+        UpdateUI(); // Ensures that the affection bar updates immediately
         SaveStatus();
     }
 

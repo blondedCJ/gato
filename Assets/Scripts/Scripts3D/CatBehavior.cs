@@ -200,7 +200,7 @@ public class CatBehavior : MonoBehaviour
                 break;
 
             case CatState.Walking:
-                agent.speed = 4f;
+                agent.speed = 2f;
                 agent.isStopped = false; // Allow movement
                 SetNewDestination();
                 stateTimer = Random.Range(3f, 7f);
@@ -208,7 +208,7 @@ public class CatBehavior : MonoBehaviour
                 break;
 
             case CatState.MediumRun:
-                agent.speed = 12f;
+                agent.speed = 6f;
                 agent.isStopped = false; // Allow movement
                 SetNewDestination();
                 stateTimer = Random.Range(3f, 7f);
@@ -216,7 +216,7 @@ public class CatBehavior : MonoBehaviour
                 break;
 
             case CatState.FastRun:
-                agent.speed = 16f;
+                agent.speed = 8f;
                 agent.isStopped = false; // Allow movement
                 ChangeAnimation("RunFast_F_IP");
                 break;

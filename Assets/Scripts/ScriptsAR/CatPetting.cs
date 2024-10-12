@@ -10,10 +10,10 @@ public class CatPetting : MonoBehaviour
     // LayerMask for raycasting (only hits the interactive layer)
     public LayerMask interactionLayerMask;
 
-    private float affectionIncreaseAmount = 5f;
+    private float affectionIncreaseRate = 5f; // Rate at which affection increases per second
+    public float pettingDistanceThreshold = 2.0f; // Distance threshold for petting
 
-    // Distance threshold for petting the cat
-    public float pettingDistanceThreshold = 2.0f; // Adjust this value as needed
+    private bool isPetting = false; // To track if the player is currently petting
 
     void Start()
     {
@@ -33,32 +33,62 @@ public class CatPetting : MonoBehaviour
         {
             HandleTouch(Mouse.current.position.ReadValue());
         }
+        else
+        {
+            // Stop petting when the input is released
+            if (isPetting)
+            {
+                StopPetting();
+            }
+        }
+
+        // Gradually increase affection while petting
+        if (isPetting)
+        {
+            GraduallyIncreaseAffection();
+        }
     }
 
     private void HandleTouch(Vector2 touchPosition)
     {
         Ray ray = arCamera.ScreenPointToRay(touchPosition);
-        RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction); // Use Physics2D.Raycast
+        RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
 
         if (hit.collider != null && hit.collider.gameObject == gameObject)
         {
-            // Check distance from the camera to the cat
             float distanceToCat = Vector3.Distance(arCamera.transform.position, transform.position);
             if (distanceToCat <= pettingDistanceThreshold)
             {
-                PetCat(); // Only allow petting if within threshold
+                if (!isPetting) // Only start the petting process once
+                {
+                    StartPetting();
+                }
             }
             else
             {
                 Debug.Log("Too far to pet the cat!");
+                StopPetting(); // Ensure petting stops if player moves too far
             }
         }
     }
 
-    private void PetCat()
+    private void StartPetting()
     {
-        catAnimator.CrossFade("Caress_idle", 0.2f);
-        petStatus.IncreaseAffection(affectionIncreaseAmount);
-        Debug.Log("Cat petted! Affection increased.");
+        isPetting = true;
+        catAnimator.CrossFade("Caress_idle", 0.2f); // Start petting animation
+        Debug.Log("Started petting the cat.");
+    }
+
+    private void StopPetting()
+    {
+        isPetting = false;
+        catAnimator.CrossFade("Idle_1", 0.2f); // Transition back to idle or another default animation
+        Debug.Log("Stopped petting the cat.");
+    }
+
+    private void GraduallyIncreaseAffection()
+    {
+        petStatus.PlayWithPet(affectionIncreaseRate * Time.deltaTime); // Gradually increase affection
+        Debug.Log("Increasing affection...");
     }
 }
